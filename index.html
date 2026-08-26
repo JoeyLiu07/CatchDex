@@ -235,8 +235,7 @@
   </div>
 
   <script>
-    // Replace with your Google Apps Script Web App URL
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMrsfYXLABCCQPyA1c8urQpHitC8UMalGGNX7ymDfZVvm8hoL21ixffg92IAjdYsNsxA/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNCDtpo7yxnc8BJs3zAclny8RShyVtL_au9uH7bJAKNoM6c_oyVHWJ4qyNVNT7iZeL5A/exec";
 
     let allCards = [];
     let activeFilter = 'All';
@@ -313,11 +312,17 @@
       };
 
       closeModal();
+
       await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'text/plain'
+        },
         body: JSON.stringify(payload)
       });
-      fetchCards();
+
+      setTimeout(fetchCards, 1000);
     }
 
     function openDetailsModal(id) {
@@ -365,9 +370,13 @@
       if (confirm('Delete this card from CatchDex?')) {
         await fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'text/plain'
+          },
           body: JSON.stringify({ action: 'delete', id: id })
         });
-        fetchCards();
+        setTimeout(fetchCards, 1000);
       }
     }
 
