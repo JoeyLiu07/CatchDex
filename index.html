@@ -113,7 +113,6 @@
       position: relative;
     }
 
-    /* Reduced Image Height (~1/2 size) */
     .card-img-container {
       width: 100%;
       height: 150px;
@@ -142,7 +141,6 @@
     .card-meta { font-size: 0.75rem; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
     .card-price { font-weight: 800; color: #15803D; font-size: 0.85rem; }
     .card-remarks { font-size: 0.7rem; color: var(--text-muted); font-style: italic; margin-top: 4px; background: #FAF9F6; padding: 4px 6px; border-radius: 4px; }
-    .card-updated { font-size: 0.65rem; color: var(--text-muted); margin-top: 6px; text-align: right; }
 
     .card-actions { margin-top: auto; padding-top: 8px; display: flex; gap: 4px; }
     .btn-link {
@@ -290,19 +288,27 @@
     let activeFilter = 'All';
 
     async function fetchCards() {
+      // 1. Instant load from local cache if present
+      const cached = localStorage.getItem('catchdex_cards');
+      if (cached) {
+        allCards = JSON.parse(cached);
+        renderCards();
+      } else {
+        // Show lightweight loading message if no cache exists
+        document.getElementById('cardGrid').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.9rem;">Loading cards...</div>';
+      }
+
+      // 2. Fetch updated data from Google Sheets in background
       try {
         const response = await fetch(GOOGLE_SCRIPT_URL);
         allCards = await response.json();
+        
+        // Save to browser cache & re-render grid
+        localStorage.setItem('catchdex_cards', JSON.stringify(allCards));
         renderCards();
       } catch (err) {
         console.error('Error fetching cards:', err);
       }
-    }
-
-    function formatDate(isoString) {
-      if (!isoString) return '';
-      const date = new Date(isoString);
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     }
 
     function renderCards() {
@@ -319,6 +325,11 @@
         
         return matchesFilter && (nameMatch || setMatch || locationMatch);
       });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.85rem;">No cards found.</div>';
+        return;
+      }
 
       filtered.forEach(c => {
         const statusClass = 'badge-' + (c.status || '').toLowerCase().replace(/\s+/g, '-');
