@@ -58,7 +58,7 @@
       border-radius: var(--radius-pill);
       outline: none;
       width: 100%;
-      max-width: 300px;
+      max-width: 320px;
       font-size: 16px; /* Prevents auto-zoom on mobile */
     }
 
@@ -177,7 +177,6 @@
     .form-group { margin-bottom: 14px; }
     .form-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px; }
     
-    /* Font size fixed to 16px to stop iOS/Android page scaling on focus */
     .form-group input, 
     .form-group select, 
     .form-group textarea {
@@ -202,7 +201,7 @@
 
   <div class="container">
     <div class="controls-bar">
-      <input type="text" id="searchInput" class="search-input" placeholder="Search card or set..." oninput="renderCards()">
+      <input type="text" id="searchInput" class="search-input" placeholder="Search card, set, or location..." oninput="renderCards()">
       <div class="filter-group">
         <button class="filter-btn active" onclick="setFilter('All', this)">All</button>
         <button class="filter-btn" onclick="setFilter('To Buy', this)">To Buy</button>
@@ -296,13 +295,18 @@
     }
 
     function renderCards() {
-      const search = document.getElementById('searchInput').value.toLowerCase();
+      const search = document.getElementById('searchInput').value.toLowerCase().trim();
       const grid = document.getElementById('cardGrid');
       grid.innerHTML = '';
 
       const filtered = allCards.filter(c => {
         const matchesFilter = activeFilter === 'All' || c.status === activeFilter;
-        const matchesSearch = (c.pokemon_name || '').toLowerCase().includes(search) || (c.card_number || '').toLowerCase().includes(search);
+        
+        const nameMatch = (c.pokemon_name || '').toLowerCase().includes(search);
+        const setMatch = (c.card_number || '').toLowerCase().includes(search);
+        const locationMatch = (c.found_at || '').toLowerCase().includes(search);
+        
+        const matchesSearch = nameMatch || setMatch || locationMatch;
         return matchesFilter && matchesSearch;
       });
 
