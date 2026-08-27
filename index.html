@@ -14,7 +14,7 @@
       --pokeball-red: #FF3B30;
       --border-color: #E5E7EB;
       --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.05);
-      --radius-lg: 16px;
+      --radius-lg: 12px;
       --radius-pill: 9999px;
     }
 
@@ -23,7 +23,7 @@
     
     header {
       background: var(--card-bg);
-      padding: 16px 24px;
+      padding: 12px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -33,44 +33,44 @@
       z-index: 100;
     }
 
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.3rem; }
+    .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 1.1rem; }
     .pokeball-icon { 
-      width: 24px; height: 24px; 
+      width: 20px; height: 20px; 
       background: linear-gradient(to bottom, var(--pokeball-red) 45%, #000 45%, #000 55%, #FFF 55%); 
       border-radius: 50%; border: 2px solid #000; display: inline-block; 
     }
 
-    .container { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
+    .container { max-width: 1200px; margin: 16px auto; padding: 0 12px; }
 
     .controls-bar {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
 
     .search-input {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      padding: 10px 16px;
+      padding: 8px 14px;
       border-radius: var(--radius-pill);
       outline: none;
       width: 100%;
       max-width: 320px;
-      font-size: 16px; /* Prevents auto-zoom on mobile */
+      font-size: 16px;
     }
 
-    .filter-group { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+    .filter-group { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
     .filter-btn {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      padding: 8px 16px;
+      padding: 6px 12px;
       border-radius: var(--radius-pill);
       cursor: pointer;
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       white-space: nowrap;
     }
     .filter-btn.active { background: var(--text-main); color: #FFF; border-color: var(--text-main); }
@@ -79,70 +79,80 @@
       background: var(--pokeball-red);
       color: white;
       border: none;
-      padding: 10px 20px;
+      padding: 8px 14px;
       border-radius: var(--radius-pill);
       font-weight: 700;
+      font-size: 0.85rem;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
 
+    /* Half-sized Compact Responsive Grid */
     .card-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+      gap: 10px;
+    }
+
+    @media (min-width: 640px) {
+      .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+        gap: 14px;
+      }
     }
 
     .card {
       background: var(--card-bg);
       border-radius: var(--radius-lg);
-      padding: 16px;
+      padding: 10px;
       box-shadow: var(--shadow-sm);
       display: flex;
       flex-direction: column;
       position: relative;
     }
 
+    /* Reduced Image Height (~1/2 size) */
     .card-img-container {
       width: 100%;
-      height: 280px;
+      height: 150px;
       background: #F8F9FA;
-      border-radius: 12px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
     .card-img { width: 100%; height: 100%; object-fit: contain; }
     
-    .card-title { font-size: 1.1rem; font-weight: 700; }
-    .card-set { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; }
+    .card-title { font-size: 0.85rem; font-weight: 700; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .card-set { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px; }
 
-    .badge-container { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
-    .badge { padding: 4px 10px; border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+    .badge-container { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
+    .badge { padding: 2px 6px; border-radius: var(--radius-pill); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; }
     
     .badge-to-buy { background: #E0F2FE; color: #0369A1; }
     .badge-to-compare-price { background: #FEF3C7; color: #B45309; }
     .badge-watchlist { background: #FCE7F3; color: #BE185D; }
     .badge-user { background: #F3F4F6; color: #374151; }
 
-    .card-meta { font-size: 0.85rem; margin-bottom: 6px; display: flex; justify-content: space-between; }
-    .card-price { font-weight: 800; color: #15803D; font-size: 1rem; }
-    .card-remarks { font-size: 0.8rem; color: var(--text-muted); font-style: italic; margin-top: 6px; background: #FAF9F6; padding: 6px 8px; border-radius: 6px; }
-    .card-updated { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; text-align: right; }
+    .card-meta { font-size: 0.75rem; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
+    .card-price { font-weight: 800; color: #15803D; font-size: 0.85rem; }
+    .card-remarks { font-size: 0.7rem; color: var(--text-muted); font-style: italic; margin-top: 4px; background: #FAF9F6; padding: 4px 6px; border-radius: 4px; }
+    .card-updated { font-size: 0.65rem; color: var(--text-muted); margin-top: 6px; text-align: right; }
 
-    .card-actions { margin-top: auto; padding-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .card-actions { margin-top: auto; padding-top: 8px; display: flex; gap: 4px; }
     .btn-link {
       flex: 1; text-align: center; background: #F3F4F6; color: var(--text-main);
-      border: none; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      border: none; padding: 6px 4px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer;
     }
-    .btn-edit { background: #E0E7FF; color: #3730A3; border: none; padding: 8px 10px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.8rem; }
-    .btn-delete { background: #FEE2E2; color: #DC2626; border: none; padding: 8px 10px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.8rem; }
+    .btn-edit { background: #E0E7FF; color: #3730A3; border: none; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.7rem; }
+    .btn-delete { background: #FEE2E2; color: #DC2626; border: none; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.7rem; }
 
-    /* Mobile Responsive Modal Overhaul */
+    /* Modal Styling */
     .modal { 
       display: none; 
       position: fixed; 
@@ -174,22 +184,22 @@
       .modal-content { border-radius: var(--radius-lg); }
     }
 
-    .form-group { margin-bottom: 14px; }
-    .form-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 4px; }
     
     .form-group input, 
     .form-group select, 
     .form-group textarea {
       width: 100%; 
-      padding: 10px 12px; 
+      padding: 8px 10px; 
       border: 1px solid var(--border-color); 
-      border-radius: 8px; 
+      border-radius: 6px; 
       outline: none;
       font-size: 16px !important;
     }
 
-    .detail-row { margin-bottom: 12px; font-size: 0.9rem; }
-    .detail-label { font-weight: 700; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; }
+    .detail-row { margin-bottom: 10px; font-size: 0.85rem; }
+    .detail-label { font-weight: 700; color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; }
   </style>
 </head>
 <body>
@@ -205,7 +215,7 @@
       <div class="filter-group">
         <button class="filter-btn active" onclick="setFilter('All', this)">All</button>
         <button class="filter-btn" onclick="setFilter('To Buy', this)">To Buy</button>
-        <button class="filter-btn" onclick="setFilter('To Compare Price', this)">To Compare Price</button>
+        <button class="filter-btn" onclick="setFilter('To Compare Price', this)">To Compare</button>
         <button class="filter-btn" onclick="setFilter('Watchlist', this)">Watchlist</button>
       </div>
     </div>
@@ -216,7 +226,7 @@
   <!-- Add / Edit Modal -->
   <div id="cardModal" class="modal">
     <div class="modal-content">
-      <h2 id="modalTitle" style="margin-bottom: 16px;">Add Pokémon Card</h2>
+      <h3 id="modalTitle" style="margin-bottom: 14px;">Add Pokémon Card</h3>
       <form id="cardForm" onsubmit="saveCard(event)">
         <input type="hidden" id="card_id">
         <div class="form-group">
@@ -259,7 +269,7 @@
           <label>Added By</label>
           <input type="text" id="added_by" placeholder="e.g., JL, NY">
         </div>
-        <div style="display: flex; gap: 8px; margin-top: 20px;">
+        <div style="display: flex; gap: 8px; margin-top: 16px;">
           <button type="submit" class="btn-primary" style="flex:1; justify-content: center;">Save Card</button>
           <button type="button" class="filter-btn" onclick="closeModal()">Cancel</button>
         </div>
@@ -274,6 +284,7 @@
 
   <script>
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMrsfYXLABCCQPyA1c8urQpHitC8UMalGGNX7ymDfZVvm8hoL21ixffg92IAjdYsNsxA/exec";
+    const PLACEHOLDER_SVG = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='210' viewBox='0 0 150 210'%3E%3Crect width='100%25' height='100%25' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%239ca3af'%3ENo Image%3C/text%3E%3C/svg%3E";
 
     let allCards = [];
     let activeFilter = 'All';
@@ -306,31 +317,34 @@
         const setMatch = (c.card_number || '').toLowerCase().includes(search);
         const locationMatch = (c.found_at || '').toLowerCase().includes(search);
         
-        const matchesSearch = nameMatch || setMatch || locationMatch;
-        return matchesFilter && matchesSearch;
+        return matchesFilter && (nameMatch || setMatch || locationMatch);
       });
 
       filtered.forEach(c => {
         const statusClass = 'badge-' + (c.status || '').toLowerCase().replace(/\s+/g, '-');
+        const imgSource = c.image_url ? c.image_url : PLACEHOLDER_SVG;
+        
         grid.innerHTML += `
           <div class="card">
             <div class="card-img-container">
-              <img class="card-img" src="${c.image_url || 'https://via.placeholder.com/200x280?text=No+Image'}" alt="${c.pokemon_name}" onerror="this.src='https://via.placeholder.com/200x280?text=No+Image'">
+              <img class="card-img" 
+                   src="${imgSource}" 
+                   alt="${c.pokemon_name}" 
+                   loading="lazy" 
+                   onerror="this.onerror=null;this.src='${PLACEHOLDER_SVG}';">
             </div>
-            <div class="card-title">${c.pokemon_name}</div>
+            <div class="card-title" title="${c.pokemon_name}">${c.pokemon_name}</div>
             <div class="card-set">${c.card_number || 'N/A'}</div>
             <div class="badge-container">
               <span class="badge ${statusClass}">${c.status}</span>
-              ${c.added_by ? `<span class="badge badge-user">By: ${c.added_by}</span>` : ''}
             </div>
             ${c.price ? `<div class="card-meta"><span>Price:</span><span class="card-price">$${Number(c.price).toFixed(2)}</span></div>` : ''}
-            ${c.found_at ? `<div class="card-meta"><span>Found At:</span> <strong>${c.found_at}</strong></div>` : ''}
+            ${c.found_at ? `<div class="card-meta"><span>Found:</span> <strong>${c.found_at}</strong></div>` : ''}
             ${c.remarks ? `<div class="card-remarks">"${c.remarks}"</div>` : ''}
-            ${c.updated_at ? `<div class="card-updated">Updated ${formatDate(c.updated_at)}</div>` : ''}
             <div class="card-actions">
-              <button class="btn-link" onclick="openDetailsModal('${c.id}')">View Listing</button>
+              <button class="btn-link" onclick="openDetailsModal('${c.id}')">View</button>
               <button class="btn-edit" onclick="openEditModal('${c.id}')">Edit</button>
-              <button class="btn-delete" onclick="deleteCard('${c.id}')">Delete</button>
+              <button class="btn-delete" onclick="deleteCard('${c.id}')">✕</button>
             </div>
           </div>
         `;
@@ -359,9 +373,7 @@
       await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
-        headers: {
-          'Content-Type': 'text/plain'
-        },
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(payload)
       });
 
@@ -374,7 +386,7 @@
 
       const content = document.getElementById('detailsModalContent');
       content.innerHTML = `
-        <h2 style="margin-bottom: 16px;">${card.pokemon_name}</h2>
+        <h3 style="margin-bottom: 14px;">${card.pokemon_name}</h3>
         <div class="detail-row"><div class="detail-label">Card Number</div><div>${card.card_number || 'N/A'}</div></div>
         <div class="detail-row"><div class="detail-label">Status</div><div>${card.status}</div></div>
         <div class="detail-row"><div class="detail-label">Price</div><div>${card.price ? '$' + Number(card.price).toFixed(2) : 'N/A'}</div></div>
@@ -383,7 +395,7 @@
         <div class="detail-row"><div class="detail-label">Remarks</div><div>${card.remarks || 'None'}</div></div>
         ${card.updated_at ? `<div class="detail-row"><div class="detail-label">Last Updated</div><div>${new Date(card.updated_at).toLocaleString()}</div></div>` : ''}
         ${card.relevant_link ? `<div class="detail-row"><div class="detail-label">Listing Link</div><a href="${card.relevant_link}" target="_blank" style="color: var(--pokeball-red); font-weight:700;">Open External Listing ↗</a></div>` : ''}
-        <button class="filter-btn" style="width: 100%; margin-top: 16px;" onclick="closeDetailsModal()">Close</button>
+        <button class="filter-btn" style="width: 100%; margin-top: 14px;" onclick="closeDetailsModal()">Close</button>
       `;
       document.getElementById('detailsModal').classList.add('open');
       document.body.style.overflow = 'hidden';
@@ -419,9 +431,7 @@
         await fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
           mode: 'no-cors',
-          headers: {
-            'Content-Type': 'text/plain'
-          },
+          headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify({ action: 'delete', id: id })
         });
         setTimeout(fetchCards, 1000);
