@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
   <title>CatchDex</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -19,7 +19,13 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-    body { background-color: var(--bg-canvas); color: var(--text-main); padding-bottom: 60px; }
+    
+    html, body {
+      touch-action: manipulation;
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      padding-bottom: 60px;
+    }
     
     header {
       background: var(--card-bg);
@@ -54,12 +60,12 @@
     .search-input {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      padding: 8px 14px;
+      padding: 10px 14px;
       border-radius: var(--radius-pill);
       outline: none;
       width: 100%;
       max-width: 320px;
-      font-size: 16px;
+      font-size: 16px !important; /* Prevents auto-zoom in Chrome/Safari */
     }
 
     .filter-group { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
@@ -150,7 +156,7 @@
     .btn-edit { background: #E0E7FF; color: #3730A3; border: none; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.7rem; }
     .btn-delete { background: #FEE2E2; color: #DC2626; border: none; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.7rem; }
 
-    /* Modal Styling */
+    /* Modal Styling - Mobile Focused */
     .modal { 
       display: none; 
       position: fixed; 
@@ -175,25 +181,28 @@
       max-height: 85vh; 
       overflow-y: auto; 
       -webkit-overflow-scrolling: touch; 
+      padding-bottom: 40px; /* Extra space so bottom fields scroll clear of mobile keyboard */
     }
 
     @media (min-width: 640px) {
       .modal { align-items: center; padding: 16px; }
-      .modal-content { border-radius: var(--radius-lg); }
+      .modal-content { border-radius: var(--radius-lg); padding-bottom: 20px; }
     }
 
     .form-group { margin-bottom: 12px; }
     .form-group label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 4px; }
     
+    /* 16px Font Size stops Chrome/Safari from auto-zooming field focus */
     .form-group input, 
     .form-group select, 
     .form-group textarea {
       width: 100%; 
-      padding: 8px 10px; 
+      padding: 10px 12px; 
       border: 1px solid var(--border-color); 
       border-radius: 6px; 
       outline: none;
       font-size: 16px !important;
+      background: #FFF;
     }
 
     .detail-row { margin-bottom: 10px; font-size: 0.85rem; }
@@ -288,22 +297,20 @@
     let activeFilter = 'All';
 
     async function fetchCards() {
-      // 1. Instant load from local cache if present
+      // 1. Instant load from browser local cache
       const cached = localStorage.getItem('catchdex_cards');
       if (cached) {
         allCards = JSON.parse(cached);
         renderCards();
       } else {
-        // Show lightweight loading message if no cache exists
         document.getElementById('cardGrid').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.9rem;">Loading cards...</div>';
       }
 
-      // 2. Fetch updated data from Google Sheets in background
+      // 2. Refresh updated data in background
       try {
         const response = await fetch(GOOGLE_SCRIPT_URL);
         allCards = await response.json();
         
-        // Save to browser cache & re-render grid
         localStorage.setItem('catchdex_cards', JSON.stringify(allCards));
         renderCards();
       } catch (err) {
@@ -468,6 +475,15 @@
       document.getElementById('cardModal').classList.remove('open'); 
       document.body.style.overflow = '';
     }
+
+    // Auto-scroll focused form field into view above keyboard on mobile Chrome
+    document.querySelectorAll('.modal-content input, .modal-content textarea, .modal-content select').forEach(element => {
+      element.addEventListener('focus', () => {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+      });
+    });
 
     fetchCards();
   </script>
