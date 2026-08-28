@@ -327,7 +327,7 @@
         const matchesFilter = activeFilter === 'All' || c.status === activeFilter;
         
         const nameMatch = (c.pokemon_name || '').toLowerCase().includes(search);
-        const setMatch = (c.card_number || '').toLowerCase().includes(search);
+        const setMatch = String(c.card_number || '').toLowerCase().includes(search);
         const locationMatch = (c.found_at || '').toLowerCase().includes(search);
         
         return matchesFilter && (nameMatch || setMatch || locationMatch);
