@@ -2,488 +2,112 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CatchDex</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-canvas: #F4F5F9;
+      --bg: #F8FAFC;
       --card-bg: #FFFFFF;
-      --text-main: #1A1A24;
-      --text-muted: #6C727F;
-      --pokeball-red: #FF3B30;
-      --border-color: #E5E7EB;
-      --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.05);
-      --radius-lg: 12px;
-      --radius-pill: 9999px;
+      --text: #0F172A;
+      --text-muted: #64748B;
+      --primary: #4F46E5;
+      --border: #E2E8F0;
+      --radius: 12px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-    
-    html, body {
-      touch-action: manipulation;
-      background-color: var(--bg-canvas);
-      color: var(--text-main);
-      padding-bottom: 60px;
-    }
-    
+    body { background-color: var(--bg); color: var(--text); padding: 16px; }
+
     header {
-      background: var(--card-bg);
-      padding: 12px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: var(--shadow-sm);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 1.1rem; }
-    .pokeball-icon { 
-      width: 20px; height: 20px; 
-      background: linear-gradient(to bottom, var(--pokeball-red) 45%, #000 45%, #000 55%, #FFF 55%); 
-      border-radius: 50%; border: 2px solid #000; display: inline-block; 
-    }
-
-    .container { max-width: 1200px; margin: 16px auto; padding: 0 12px; }
-
-    .controls-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .search-input {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      padding: 10px 14px;
-      border-radius: var(--radius-pill);
-      outline: none;
-      width: 100%;
-      max-width: 320px;
-      font-size: 16px !important; /* Prevents auto-zoom in Chrome/Safari */
-    }
-
-    .filter-group { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
-    .filter-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      padding: 6px 12px;
-      border-radius: var(--radius-pill);
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.75rem;
-      white-space: nowrap;
-    }
-    .filter-btn.active { background: var(--text-main); color: #FFF; border-color: var(--text-main); }
-
-    .btn-primary {
-      background: var(--pokeball-red);
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: var(--radius-pill);
-      font-weight: 700;
-      font-size: 0.85rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    /* Half-sized Compact Responsive Grid */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
-      gap: 10px;
-    }
-
-    @media (min-width: 640px) {
-      .card-grid {
-        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-        gap: 14px;
-      }
-    }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      padding: 10px;
-      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
       display: flex;
       flex-direction: column;
-      position: relative;
+      gap: 12px;
     }
 
-    .card-img-container {
+    h1 { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+
+    .search-box {
       width: 100%;
-      height: 150px;
-      background: #F8F9FA;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-
-    .card-img { width: 100%; height: 100%; object-fit: contain; }
-    
-    .card-title { font-size: 0.85rem; font-weight: 700; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .card-set { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px; }
-
-    .badge-container { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
-    .badge { padding: 2px 6px; border-radius: var(--radius-pill); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; }
-    
-    .badge-to-buy { background: #E0F2FE; color: #0369A1; }
-    .badge-to-compare-price { background: #FEF3C7; color: #B45309; }
-    .badge-watchlist { background: #FCE7F3; color: #BE185D; }
-    .badge-user { background: #F3F4F6; color: #374151; }
-
-    .card-meta { font-size: 0.75rem; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
-    .card-price { font-weight: 800; color: #15803D; font-size: 0.85rem; }
-    .card-remarks { font-size: 0.7rem; color: var(--text-muted); font-style: italic; margin-top: 4px; background: #FAF9F6; padding: 4px 6px; border-radius: 4px; }
-
-    .card-actions { margin-top: auto; padding-top: 8px; display: flex; gap: 4px; }
-    .btn-link {
-      flex: 1; text-align: center; background: #F3F4F6; color: var(--text-main);
-      border: none; padding: 6px 4px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer;
-    }
-    .btn-edit { background: #E0E7FF; color: #3730A3; border: none; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.7rem; }
-    .btn-delete { background: #FEE2E2; color: #DC2626; border: none; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.7rem; }
-
-    /* Modal Styling - Mobile Focused */
-    .modal { 
-      display: none; 
-      position: fixed; 
-      inset: 0; 
-      background: rgba(0,0,0,0.5); 
-      justify-content: center; 
-      align-items: flex-end; 
-      z-index: 1000; 
-      padding: 0; 
-    }
-    .modal.open { display: flex; }
-    
-    .modal-content { 
-      background: white; 
-      padding: 20px; 
-      border-top-left-radius: var(--radius-lg); 
-      border-top-right-radius: var(--radius-lg); 
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-      width: 100%; 
-      max-width: 500px; 
-      max-height: 85vh; 
-      overflow-y: auto; 
-      -webkit-overflow-scrolling: touch; 
-      padding-bottom: 40px; /* Extra space so bottom fields scroll clear of mobile keyboard */
-    }
-
-    @media (min-width: 640px) {
-      .modal { align-items: center; padding: 16px; }
-      .modal-content { border-radius: var(--radius-lg); padding-bottom: 20px; }
-    }
-
-    .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 4px; }
-    
-    /* 16px Font Size stops Chrome/Safari from auto-zooming field focus */
-    .form-group input, 
-    .form-group select, 
-    .form-group textarea {
-      width: 100%; 
-      padding: 10px 12px; 
-      border: 1px solid var(--border-color); 
-      border-radius: 6px; 
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 1rem;
       outline: none;
-      font-size: 16px !important;
-      background: #FFF;
     }
 
-    .detail-row { margin-bottom: 10px; font-size: 0.85rem; }
-    .detail-label { font-weight: 700; color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .card-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .card-num { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); }
+    .card-title { font-size: 0.9rem; font-weight: 800; margin-top: 4px; }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="brand"><span class="pokeball-icon"></span> CatchDex</div>
-    <button class="btn-primary" onclick="openModal()">+ Add Card</button>
+    <h1>CatchDex</h1>
+    <input type="text" id="searchInput" class="search-box" placeholder="Search by name or number..." oninput="filterCards()">
   </header>
 
-  <div class="container">
-    <div class="controls-bar">
-      <input type="text" id="searchInput" class="search-input" placeholder="Search card, set, or location..." oninput="renderCards()">
-      <div class="filter-group">
-        <button class="filter-btn active" onclick="setFilter('All', this)">All</button>
-        <button class="filter-btn" onclick="setFilter('To Buy', this)">To Buy</button>
-        <button class="filter-btn" onclick="setFilter('To Compare Price', this)">To Compare</button>
-        <button class="filter-btn" onclick="setFilter('Watchlist', this)">Watchlist</button>
-      </div>
-    </div>
-
-    <div id="cardGrid" class="card-grid"></div>
-  </div>
-
-  <!-- Add / Edit Modal -->
-  <div id="cardModal" class="modal">
-    <div class="modal-content">
-      <h3 id="modalTitle" style="margin-bottom: 14px;">Add Pokémon Card</h3>
-      <form id="cardForm" onsubmit="saveCard(event)">
-        <input type="hidden" id="card_id">
-        <div class="form-group">
-          <label>Pokémon Name *</label>
-          <input type="text" id="pokemon_name" required placeholder="e.g., Charizard EX">
-        </div>
-        <div class="form-group">
-          <label>Card Number / Set</label>
-          <input type="text" id="card_number" placeholder="e.g., 151/165">
-        </div>
-        <div class="form-group">
-          <label>Card Image URL</label>
-          <input type="url" id="image_url" placeholder="https://images.pokemontcg.io/...">
-        </div>
-        <div class="form-group">
-          <label>Status</label>
-          <select id="status">
-            <option value="To Buy">To Buy</option>
-            <option value="To Compare Price">To Compare Price</option>
-            <option value="Watchlist">Watchlist</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Target Price ($)</label>
-          <input type="number" step="0.01" id="price" placeholder="25.00">
-        </div>
-        <div class="form-group">
-          <label>Found At / Where to Buy</label>
-          <input type="text" id="found_at" placeholder="e.g., eBay, Local Store, Mercari">
-        </div>
-        <div class="form-group">
-          <label>Relevant Link</label>
-          <input type="url" id="relevant_link" placeholder="https://ebay.com/itm/...">
-        </div>
-        <div class="form-group">
-          <label>Remarks</label>
-          <textarea id="remarks" rows="2" placeholder="Condition notes, seller details..."></textarea>
-        </div>
-        <div class="form-group">
-          <label>Added By</label>
-          <input type="text" id="added_by" placeholder="e.g., JL, NY">
-        </div>
-        <div style="display: flex; gap: 8px; margin-top: 16px;">
-          <button type="submit" class="btn-primary" style="flex:1; justify-content: center;">Save Card</button>
-          <button type="button" class="filter-btn" onclick="closeModal()">Cancel</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- View Details Modal -->
-  <div id="detailsModal" class="modal">
-    <div class="modal-content" id="detailsModalContent"></div>
-  </div>
+  <div class="card-grid" id="cardGrid"></div>
 
   <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzvg1XlH4HO5EDHiajZ5NSjuMx1dVdWETJJo2JLwJ9-Xh96NUt8fCPWUEVI-UVk5kTeMQ/exec";
-    const PLACEHOLDER_SVG = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='210' viewBox='0 0 150 210'%3E%3Crect width='100%25' height='100%25' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%239ca3af'%3ENo Image%3C/text%3E%3C/svg%3E";
-
     let allCards = [];
-    let activeFilter = 'All';
 
     async function fetchCards() {
-      // 1. Instant load from browser local cache
-      const cached = localStorage.getItem('catchdex_cards');
-      if (cached) {
-        allCards = JSON.parse(cached);
-        renderCards();
-      } else {
-        document.getElementById('cardGrid').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.9rem;">Loading cards...</div>';
-      }
-
-      // 2. Refresh updated data in background
       try {
-        const response = await fetch(GOOGLE_SCRIPT_URL);
+        // Replace with your actual endpoint or data source
+        const response = await fetch("YOUR_DATA_SOURCE_URL");
         allCards = await response.json();
-        
-        localStorage.setItem('catchdex_cards', JSON.stringify(allCards));
-        renderCards();
-      } catch (err) {
-        console.error('Error fetching cards:', err);
+        renderCards(allCards);
+      } catch (e) {
+        console.error("Error fetching cards:", e);
       }
     }
 
-    function renderCards() {
-      const search = document.getElementById('searchInput').value.toLowerCase().trim();
+    function renderCards(cards) {
       const grid = document.getElementById('cardGrid');
       grid.innerHTML = '';
 
-      const filtered = allCards.filter(c => {
-        const matchesFilter = activeFilter === 'All' || c.status === activeFilter;
-        
-        const nameMatch = (c.pokemon_name || '').toLowerCase().includes(search);
-        const setMatch = String(c.card_number || '').toLowerCase().includes(search);
-        const locationMatch = (c.found_at || '').toLowerCase().includes(search);
-        
-        return matchesFilter && (nameMatch || setMatch || locationMatch);
-      });
-
-      if (filtered.length === 0) {
-        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.85rem;">No cards found.</div>';
-        return;
-      }
-
-      filtered.forEach(c => {
-        const statusClass = 'badge-' + (c.status || '').toLowerCase().replace(/\s+/g, '-');
-        const imgSource = c.image_url ? c.image_url : PLACEHOLDER_SVG;
-        
+      cards.forEach(c => {
         grid.innerHTML += `
-          <div class="card">
-            <div class="card-img-container">
-              <img class="card-img" 
-                   src="${imgSource}" 
-                   alt="${c.pokemon_name}" 
-                   loading="lazy" 
-                   onerror="this.onerror=null;this.src='${PLACEHOLDER_SVG}';">
-            </div>
-            <div class="card-title" title="${c.pokemon_name}">${c.pokemon_name}</div>
-            <div class="card-set">${c.card_number || 'N/A'}</div>
-            <div class="badge-container">
-              <span class="badge ${statusClass}">${c.status}</span>
-            </div>
-            ${c.price ? `<div class="card-meta"><span>Price:</span><span class="card-price">$${Number(c.price).toFixed(2)}</span></div>` : ''}
-            ${c.found_at ? `<div class="card-meta"><span>Found:</span> <strong>${c.found_at}</strong></div>` : ''}
-            ${c.remarks ? `<div class="card-remarks">"${c.remarks}"</div>` : ''}
-            <div class="card-actions">
-              <button class="btn-link" onclick="openDetailsModal('${c.id}')">View</button>
-              <button class="btn-edit" onclick="openEditModal('${c.id}')">Edit</button>
-              <button class="btn-delete" onclick="deleteCard('${c.id}')">✕</button>
-            </div>
+          <div class="card-item">
+            <div class="card-num">#${c.card_number || '---'}</div>
+            <div class="card-title">${c.name || 'Unknown'}</div>
           </div>
         `;
       });
     }
 
-    async function saveCard(e) {
-      e.preventDefault();
-      const id = document.getElementById('card_id').value;
-      const payload = {
-        action: id ? 'edit' : 'add',
-        id: id,
-        pokemon_name: document.getElementById('pokemon_name').value,
-        card_number: document.getElementById('card_number').value,
-        image_url: document.getElementById('image_url').value,
-        status: document.getElementById('status').value,
-        price: document.getElementById('price').value || '',
-        found_at: document.getElementById('found_at').value,
-        relevant_link: document.getElementById('relevant_link').value,
-        remarks: document.getElementById('remarks').value,
-        added_by: document.getElementById('added_by').value
-      };
-
-      closeModal();
-
-      await fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(payload)
+    function filterCards() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      
+      const filtered = allCards.filter(c => {
+        // Safe string conversion for card_number to prevent toLowerCase TypeError
+        const cardNumberStr = String(c.card_number || "").toLowerCase();
+        const nameStr = String(c.name || "").toLowerCase();
+        
+        return cardNumberStr.includes(query) || nameStr.includes(query);
       });
 
-      setTimeout(fetchCards, 1000);
+      renderCards(filtered);
     }
-
-    function openDetailsModal(id) {
-      const card = allCards.find(c => String(c.id) === String(id));
-      if (!card) return;
-
-      const content = document.getElementById('detailsModalContent');
-      content.innerHTML = `
-        <h3 style="margin-bottom: 14px;">${card.pokemon_name}</h3>
-        <div class="detail-row"><div class="detail-label">Card Number</div><div>${card.card_number || 'N/A'}</div></div>
-        <div class="detail-row"><div class="detail-label">Status</div><div>${card.status}</div></div>
-        <div class="detail-row"><div class="detail-label">Price</div><div>${card.price ? '$' + Number(card.price).toFixed(2) : 'N/A'}</div></div>
-        <div class="detail-row"><div class="detail-label">Found At / Where to Buy</div><div>${card.found_at || 'N/A'}</div></div>
-        <div class="detail-row"><div class="detail-label">Added By</div><div>${card.added_by || 'N/A'}</div></div>
-        <div class="detail-row"><div class="detail-label">Remarks</div><div>${card.remarks || 'None'}</div></div>
-        ${card.updated_at ? `<div class="detail-row"><div class="detail-label">Last Updated</div><div>${new Date(card.updated_at).toLocaleString()}</div></div>` : ''}
-        ${card.relevant_link ? `<div class="detail-row"><div class="detail-label">Listing Link</div><a href="${card.relevant_link}" target="_blank" style="color: var(--pokeball-red); font-weight:700;">Open External Listing ↗</a></div>` : ''}
-        <button class="filter-btn" style="width: 100%; margin-top: 14px;" onclick="closeDetailsModal()">Close</button>
-      `;
-      document.getElementById('detailsModal').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeDetailsModal() { 
-      document.getElementById('detailsModal').classList.remove('open'); 
-      document.body.style.overflow = '';
-    }
-
-    function openEditModal(id) {
-      const card = allCards.find(c => String(c.id) === String(id));
-      if (!card) return;
-
-      document.getElementById('modalTitle').innerText = 'Edit Pokémon Card';
-      document.getElementById('card_id').value = card.id;
-      document.getElementById('pokemon_name').value = card.pokemon_name || '';
-      document.getElementById('card_number').value = card.card_number || '';
-      document.getElementById('image_url').value = card.image_url || '';
-      document.getElementById('status').value = card.status || 'To Buy';
-      document.getElementById('price').value = card.price || '';
-      document.getElementById('found_at').value = card.found_at || '';
-      document.getElementById('relevant_link').value = card.relevant_link || '';
-      document.getElementById('remarks').value = card.remarks || '';
-      document.getElementById('added_by').value = card.added_by || '';
-
-      document.getElementById('cardModal').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-
-    async function deleteCard(id) {
-      if (confirm('Delete this card from CatchDex?')) {
-        await fetch(GOOGLE_SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ action: 'delete', id: id })
-        });
-        setTimeout(fetchCards, 1000);
-      }
-    }
-
-    function setFilter(filter, btn) {
-      activeFilter = filter;
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderCards();
-    }
-
-    function openModal() {
-      document.getElementById('modalTitle').innerText = 'Add Pokémon Card';
-      document.getElementById('cardForm').reset();
-      document.getElementById('card_id').value = '';
-      document.getElementById('cardModal').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() { 
-      document.getElementById('cardModal').classList.remove('open'); 
-      document.body.style.overflow = '';
-    }
-
-    // Auto-scroll focused form field into view above keyboard on mobile Chrome
-    document.querySelectorAll('.modal-content input, .modal-content textarea, .modal-content select').forEach(element => {
-      element.addEventListener('focus', () => {
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 300);
-      });
-    });
 
     fetchCards();
   </script>
