@@ -232,17 +232,23 @@ background: #FFF;
 <h3 id="modalTitle" style="margin-bottom: 14px;">Add Pokémon Card</h3>
 <form id="cardForm" onsubmit="saveCard(event)">
 <input type="hidden" id="card_id">
+
+<div class="form-group">
+<label>Card ID / Set Number *</label>
+<div style="display: flex; gap: 8px;">
+<input type="text" id="card_number" placeholder="e.g., s8b-254" style="flex: 1;" required>
+<button type="button" class="btn-edit" onclick="fetchCardData(event)" style="padding: 0 12px; height: auto;">Fetch Info</button>
+</div>
+<small style="color: var(--text-muted); font-size: 0.65rem; margin-top: 4px; display: block;">Use TCGdex Japanese format (e.g., s8b-254) to auto-fill details.</small>
+</div>
+
 <div class="form-group">
 <label>Pokémon Name *</label>
 <input type="text" id="pokemon_name" required placeholder="e.g., Charizard EX">
 </div>
 <div class="form-group">
-<label>Card Number / Set</label>
-<input type="text" id="card_number" placeholder="e.g., 151/165">
-</div>
-<div class="form-group">
 <label>Card Image URL</label>
-<input type="url" id="image_url" placeholder="https://images.pokemontcg.io/...">
+<input type="url" id="image_url" placeholder="https://assets.tcgdex.net/...">
 </div>
 <div class="form-group">
 <label>Status</label>
@@ -467,6 +473,56 @@ document.body.style.overflow = 'hidden';
 function closeModal() { 
 document.getElementById('cardModal').classList.remove('open'); 
 document.body.style.overflow = '';
+}
+
+// Fetch Japanese Card info from TCGdex API
+async function fetchCardData(event) {
+  const cardIdInput = document.getElementById('card_number');
+  const nameInput = document.getElementById('pokemon_name');
+  const imageInput = document.getElementById('image_url');
+  
+  const cardId = cardIdInput.value.toLowerCase().trim();
+  
+  if (!cardId) {
+    alert("Please enter a Card ID first (e.g., s8b-254)");
+    return;
+  }
+
+  // Uses the Japanese API endpoint
+  const apiUrl = `https://api.tcgdex.net/v2/ja/cards/${cardId}`;
+  const fetchBtn = event.target;
+  const originalText = fetchBtn.innerText;
+  
+  try {
+    fetchBtn.innerText = "Loading...";
+    fetchBtn.disabled = true;
+
+    const response = await fetch(apiUrl);
+    
+    if (!response.ok) {
+      throw new Error('Card not found');
+    }
+
+    const card = await response.json();
+    
+    if (card.name) nameInput.value = card.name;
+    if (card.image) imageInput.value = card.image + '/high.webp'; // Append /high.webp for high-res images
+    
+    // Brief visual feedback for the user
+    nameInput.style.backgroundColor = "#E0F2FE";
+    imageInput.style.backgroundColor = "#E0F2FE";
+    setTimeout(() => {
+      nameInput.style.backgroundColor = "#FFF";
+      imageInput.style.backgroundColor = "#FFF";
+    }, 800);
+
+  } catch (error) {
+    console.error("API Error:", error);
+    alert("Could not find that card. Make sure you use the TCGdex Japanese set ID format (e.g., s8b-254).");
+  } finally {
+    fetchBtn.innerText = originalText;
+    fetchBtn.disabled = false;
+  }
 }
 
 document.querySelectorAll('.modal-content input, .modal-content textarea, .modal-content select').forEach(element => {
